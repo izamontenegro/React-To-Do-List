@@ -1,38 +1,89 @@
-.App {
-  text-align: center;
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+body {
+  margin: 0;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #00e6e6, #008080);
 }
 
-.App-link {
-  color: #61dafb;
+.container {
+  background: #ffffff;
+  width: 320px;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.container input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d9d9d9;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.container input:focus {
+  border-color: #00b3b3;
+}
+
+.new-item-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #00b3b3;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.new-item-button:hover {
+  background: #009999;
+}
+
+.new-item-button:active {
+  transform: scale(0.98);
+}
+
+.todo-list {
+  list-style: none;
+  margin: 15px 0 0;
+  padding: 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 6px;
+  font-size: 14px;
+}
+
+.todo-item + .todo-item {
+  border-top: 1px solid #eee;
+}
+
+.todo-item button {
+  background: transparent;
+  border: none;
+  color: #ff5c5c;
+  cursor: pointer;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+
+.todo-item button:hover {
+  color: #d93636;
 }

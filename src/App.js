@@ -1,53 +1,88 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+import api from "./services/api";
 
 function App() {
-  let [list, setList] = useState([]);
-  let [newItem, setNewItem] = useState("")
+  const [list, setList] = useState([]);
+  const [newItem, setNewItem] = useState("");
 
-  useEffect(()=>{
-    setList(["Tarefa1", "Tarefa2"]);
+  // 🔄 BUSCAR TAREFAS DO BACKEND
+  useEffect(() => {
+    api.get("/")
+      .then((response) => {
+        // Ajuste: verifica se os dados vêm dentro de 'tasks' ou direto no array
+        const tasks = response.data.tasks || response.data;
+        setList(Array.isArray(tasks) ? tasks : []);
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar tarefas:", error);
+      });
   }, []);
 
-  return (
-    <div className='container'>
-      <input placeholder="Tarefa" value={newItem} onChange={value => setNewItem(value.target.value)} type="text"/>
-
-      <button className="new-item-button" onClick={() => addNewItem()}>Adicionar nova tarefa</button>
-    <ul className="todo-list">
-      {
-        list.map((item, index) => (
-          <li className="todo-item" key={index}>
-  <span>{item}</span>
-  <button onClick={() => deleteItem(index)}>Deletar</button>
-</li>
-        ))
-      }
-    </ul>
-     </div>
-  );
-
+  // ➕ CRIAR NOVA TAREFA
   function addNewItem() {
-    if (newItem.length <= 0) {
-      alert('Por favor, digite algo no campo de texto.');
+    if (!newItem) {
+      alert("Digite uma tarefa");
       return;
     }
 
-    let itemIndex = list.indexOf(newItem)
-    if (itemIndex >=0) {
-       alert('Tarefa repetida.');
-      return;
-    }
-
-    setList([...list, newItem]);
-    setNewItem("");
+    // ✅ ENVIANDO SEM USER_ID:
+    // Isso evita o erro de chave estrangeira (ForeignKeyViolation) 
+    // enquanto você não tem usuários cadastrados no Postgres.
+    api.post("/", {
+      name: newItem,
+      is_complete: false
+      // user_id: 1 <- Removido para evitar erro 500/CORS
+    })
+      .then((response) => {
+        // Pega a tarefa criada (ajustado para aceitar diferentes formatos de retorno)
+        const tarefaCriada = response.data.task || response.data;
+        setList([...list, tarefaCriada]);
+        setNewItem("");
+      })
+      .catch((error) => {
+        console.error("Erro ao criar tarefa:", error);
+        alert("Erro ao conectar com o servidor. Verifique o console do Backend.");
+      });
   }
 
-  function deleteItem(index) {
-    let tempArray = [...list];
-    tempArray.splice(index, 1);
-    setList(tempArray);
+  // ❌ REMOVER TAREFA
+  function deleteItem(id) {
+    api.delete(`/${id}`)
+      .then(() => {
+        setList(list.filter(task => task.id !== id));
+      })
+      .catch((error) => {
+        console.error("Erro ao deletar tarefa:", error);
+      });
   }
+
+  return (
+    <div className="container">
+      <div className="input-group">
+        <input
+          placeholder="Digite sua tarefa..."
+          value={newItem}
+          onChange={(e) => setNewItem(e.target.value)}
+          type="text"
+        />
+        <button className="new-item-button" onClick={addNewItem}>
+          Adicionar
+        </button>
+      </div>
+
+      <ul className="todo-list">
+        {list.map((task) => (
+          <li className="todo-item" key={task.id}>
+            <span>{task.name}</span>
+            <button className="delete-button" onClick={() => deleteItem(task.id)}>
+              Deletar
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 export default App;

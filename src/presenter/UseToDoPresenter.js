@@ -1,4 +1,3 @@
-// src/presenter/UseToDoPresenter.js
 import { useEffect, useMemo, useState } from "react";
 import { createTodoRepositoryRest } from "../model/ToDoRepositoryREST";
 
@@ -21,6 +20,7 @@ export function useTodoPresenter() {
       })
       .catch((err) => {
         console.error(err);
+        console.error("oiiiii");
         alert("Falha ao carregar tarefas da API.");
       });
 

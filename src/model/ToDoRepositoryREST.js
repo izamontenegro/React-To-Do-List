@@ -1,4 +1,3 @@
-// src/model/ToDoRepository.rest.js
 import { createTodo } from "./ToDo";
 
 async function request(baseUrl, path, { method = "GET", body } = {}) {
@@ -8,13 +7,19 @@ async function request(baseUrl, path, { method = "GET", body } = {}) {
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  const text = await res.text();
+  const text = await res.text().catch(() => "");
 
   if (!res.ok) {
     throw new Error(text || `HTTP ${res.status}`);
   }
 
-  return text ? JSON.parse(text) : null;
+  if (!text) return null;
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return text;
+  }
 }
 
 function apiTaskToTodo(task) {
@@ -32,17 +37,19 @@ export function createTodoRepositoryRest({ baseUrl }) {
     },
 
     async add(title) {
-      const response = await request(baseUrl, "/tasks/", {
-        method: "POST",
-        body: { name: title }, 
-      });
+  const response = await request(baseUrl, "/tasks/", {
+    method: "POST",
+    body: { name: title },
+  });
 
-      return apiTaskToTodo(response.data.Error);
-    },
+  if (!response?.data) throw new Error("API did not return created task");
+
+  return apiTaskToTodo(response.data);
+},
 
     async remove(id) {
-      await request(baseUrl, `/tasks/${id}/`, { method: "DELETE" });
-      return true;
-    },
+  await request(baseUrl, `/tasks/${id}`, { method: "DELETE" });
+  return true;
+}
   };
 }

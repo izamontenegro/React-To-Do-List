@@ -1,8 +1,12 @@
+// src/presenter/UseToDoPresenter.js
 import { useEffect, useMemo, useState } from "react";
-import { createTodoRepositoryMock } from "../model/ToDoRepository";
+import { createTodoRepositoryRest } from "../model/ToDoRepositoryREST";
 
 export function useTodoPresenter() {
-  const repo = useMemo(() => createTodoRepositoryMock(), []);
+  const repo = useMemo(
+    () => createTodoRepositoryRest({ baseUrl: "https://twodo-tasklist.onrender.com" }),
+    []
+  );
 
   const [todos, setTodos] = useState([]);
   const [newTitle, setNewTitle] = useState("");
@@ -10,9 +14,15 @@ export function useTodoPresenter() {
   useEffect(() => {
     let alive = true;
 
-    repo.list().then((data) => {
-      if (alive) setTodos(data);
-    });
+    repo
+      .list()
+      .then((data) => {
+        if (alive) setTodos(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Falha ao carregar tarefas da API.");
+      });
 
     return () => {
       alive = false;
@@ -21,26 +31,29 @@ export function useTodoPresenter() {
 
   async function addNewItem() {
     const title = newTitle.trim();
-
-    if (!title) {
-      alert("Por favor, digite algo no campo de texto.");
-      return;
-    }
+    if (!title) return alert("Por favor, digite algo no campo de texto.");
 
     const exists = todos.some((t) => t.title.toLowerCase() === title.toLowerCase());
-    if (exists) {
-      alert("Tarefa repetida.");
-      return;
-    }
+    if (exists) return alert("Tarefa repetida.");
 
-    const created = await repo.add(title);
-    setTodos((prev) => [...prev, created]);
-    setNewTitle("");
+    try {
+      const created = await repo.add(title);
+      setTodos((prev) => [...prev, created]);
+      setNewTitle("");
+    } catch (err) {
+      console.error(err);
+      alert("Falha ao criar tarefa na API.");
+    }
   }
 
   async function deleteItem(id) {
-    await repo.remove(id);
-    setTodos((prev) => prev.filter((t) => t.id !== id));
+    try {
+      await repo.remove(id);
+      setTodos((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Falha ao deletar tarefa na API.");
+    }
   }
 
   return {

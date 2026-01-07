@@ -5,7 +5,7 @@ export function TodoItem({ todo, onToggle, onDelete }) {
     <li className="todo-item">
       <input
         type="checkbox"
-        checked={todo.done}
+        checked={todo.is_complete}
         onChange={() => onToggle(todo.id)}
       />
 

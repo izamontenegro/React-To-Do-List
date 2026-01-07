@@ -19,6 +19,8 @@ export function useToDoRealtime({ onCreated, onUpdated, onDeleted, onToggled }) 
     });
 
     socket.on("message", (data) => {
+      console.log("CHEGOU NO SOCKET:", data);
+
         const { event, task, task_id } = data;
 
         switch (event) {
@@ -27,8 +29,8 @@ export function useToDoRealtime({ onCreated, onUpdated, onDeleted, onToggled }) 
                 break;
             case "TASK_UPDATED":
             case "TASK_TOGGLED":
-                onUpdated?.(task);
-                break;
+              onToggled?.(task);
+              break;
             case "TASK_DELETED":
                 onDeleted?.(task_id);
             break;

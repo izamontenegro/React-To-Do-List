@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createTodoRepositoryRest } from "../model/ToDoRepositoryREST";
-import { useToDoRealtime } from "../realtime/useToDoRealtime";
 
-export function useToDoController() {
+export function useTodoController() {
   const repo = useMemo(
     () =>
       createTodoRepositoryRest({
@@ -14,18 +13,10 @@ export function useToDoController() {
   const [todos, setTodos] = useState([]);
   const [newTitle, setNewTitle] = useState("");
 
-  useToDoRealtime({
-    onCreated: (task) => setTodos((prev) => [...prev, task]),
-    onUpdated: (task) => setTodos((prev) => prev.map((t) => (t.id === task.id ? task : t))),
-    onToggled: (task) => setTodos((prev) => prev.map((t) => (t.id === task.id ? task : t))),
-    onDeleted: (id) => setTodos((prev) => prev.filter((t) => t.id !== id)),
-  });
-
   useEffect(() => {
     let alive = true;
 
-    repo
-      .list()
+    repo.list()
       .then((data) => {
         if (alive) setTodos(data);
       })
@@ -41,21 +32,33 @@ export function useToDoController() {
   async function addNewItem() {
     if (!newTitle.trim()) return;
 
-    await repo.add(newTitle); 
-    
-    setNewTitle(""); 
+    try {
+      const created = await repo.add(newTitle);
+      setTodos((prev) => [...prev, created]);
+      setNewTitle("");
+    } catch (error) {
+      alert("Erro ao adicionar tarefa.");
+    }
   }
 
   async function deleteItem(id) {
-    await repo.remove(id);
-    setTodos((prev) => prev.filter((t) => t.id !== id));
+    try {
+      await repo.remove(id);
+      setTodos((prev) => prev.filter((t) => t.id !== id));
+    } catch (error) {
+      alert("Erro ao remover tarefa.");
+    }
   }
 
   async function toggleCheckbox(id, done) {
-    await repo.toggle(id);
-    setTodos((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, done } : t))
-    );
+    try {
+      const updated = await repo.toggle(id);
+      setTodos((prev) =>
+        prev.map((t) => (t.id === id ? updated : t))
+      );
+    } catch (error) {
+      alert("Erro ao atualizar tarefa.");
+    }
   }
 
   return {

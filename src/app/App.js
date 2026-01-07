@@ -1,6 +1,6 @@
 import React from "react";
 import { useTodoPresenter } from "../mvp/presenter/UseToDoPresenter.js"; //MVP
-import { useTodoController } from "../mvc/controller/useTodoController.js"; //MVC
+import { useToDoController } from "../mvc/controller/useTodoController.js";
 import { TodoView } from "../ui/view/ToDoView.jsx";
 
 function App() {

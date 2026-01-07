@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { createTodoRepositoryRest } from "../model/ToDoRepositoryREST";
-import { useTodoRealtime } from "../../realtime/useTodoRealtime";
+import { useToDoRealtime } from "../realtime/useToDoRealtime";
 
-export function useTodoController() {
+export function useToDoController() {
   const repo = useMemo(
     () =>
       createTodoRepositoryRest({
@@ -14,7 +14,7 @@ export function useTodoController() {
   const [todos, setTodos] = useState([]);
   const [newTitle, setNewTitle] = useState("");
 
-  useTodoRealtime({
+  useToDoRealtime({
     onCreated: (task) => setTodos((prev) => [...prev, task]),
     onUpdated: (task) => setTodos((prev) => prev.map((t) => (t.id === task.id ? task : t))),
     onToggled: (task) => setTodos((prev) => prev.map((t) => (t.id === task.id ? task : t))),

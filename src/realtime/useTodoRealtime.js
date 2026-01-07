@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react"; // Adicionado useRef
 import { io } from "socket.io-client";
 
-export function useTodoRealtime({ onCreated, onUpdated, onDeleted, onToggled }) {
+export function useToDoRealtime({ onCreated, onUpdated, onDeleted, onToggled }) {
   const handlers = useRef({ onCreated, onUpdated, onDeleted, onToggled });
 
   useEffect(() => {

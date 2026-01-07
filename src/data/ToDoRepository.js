@@ -1,4 +1,4 @@
-import { createTodo } from "./ToDo";
+import { createTodo } from "../model/ToDo";
 
 async function request(baseUrl, path, { method = "GET", body } = {}) {
   const res = await fetch(`${baseUrl}${path}`, {
@@ -29,7 +29,7 @@ function apiTaskToTodo(task) {
   });
 }
 
-export function createTodoRepositoryRest({ baseUrl }) {
+export function createTodoRepository({ baseUrl }) {
   return {
     async list() {
       const response = await request(baseUrl, "/tasks/");

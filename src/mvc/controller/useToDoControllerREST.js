@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { createTodoRepositoryRest } from "../model/ToDoRepositoryREST";
+import { createTodoRepositoryRest } from "../../data/ToDoRepositoryREST";
 
-export function useTodoController() {
+export function useToDoController() {
   const repo = useMemo(
     () =>
       createTodoRepositoryRest({
@@ -15,7 +15,6 @@ export function useTodoController() {
 
   useEffect(() => {
     let alive = true;
-
     repo.list()
       .then((data) => {
         if (alive) setTodos(data);
@@ -30,11 +29,12 @@ export function useTodoController() {
   }, [repo]);
 
   async function addNewItem() {
-    if (!newTitle.trim()) return;
+    const title = newTitle.trim();
+    if (!title) return;
 
     try {
-      const created = await repo.add(newTitle);
-      setTodos((prev) => [...prev, created]);
+      const createdTask = await repo.add(title);
+      setTodos((prev) => [...prev, createdTask]);
       setNewTitle("");
     } catch (error) {
       alert("Erro ao adicionar tarefa.");
@@ -50,23 +50,11 @@ export function useTodoController() {
     }
   }
 
-  async function toggleCheckbox(id, done) {
-    try {
-      const updated = await repo.toggle(id);
-      setTodos((prev) =>
-        prev.map((t) => (t.id === id ? updated : t))
-      );
-    } catch (error) {
-      alert("Erro ao atualizar tarefa.");
-    }
-  }
-
   return {
     todos,
     newTitle,
     setNewTitle,
     addNewItem,
     deleteItem,
-    toggleCheckbox,
   };
 }

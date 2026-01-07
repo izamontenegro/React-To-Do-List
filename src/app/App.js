@@ -1,7 +1,7 @@
 import React from "react";
-import { useTodoPresenter } from "../mvp/presenter/UseToDoPresenter.js"; //MVP
-import { useToDoController } from "../mvc/controller/useToDoControllerReactive.js";
-import { TodoView } from "../ui/view/ToDoView.jsx";
+import { useToDoController } from "../mvc/controller/UseToDoController";
+import { useToDoPresenter } from "../mvp/presenter/UseToDoPresenter";
+import { TodoView } from "../view/ToDoView";
 
 function App() {
   // Esse trecho usa o MVP
@@ -28,7 +28,6 @@ function App() {
       onNewTitleChange={controller.setNewTitle}
       onAdd={controller.addNewItem}
       onDelete={controller.deleteItem}
-      onToggle={controller.toggleCheckbox}
     />
   );
 }

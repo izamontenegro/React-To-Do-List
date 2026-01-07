@@ -1,4 +1,4 @@
-import { createTodo } from "./ToDo";
+import { createTodo } from "../model/ToDo";
 
 async function request(baseUrl, path, { method = "GET", body } = {}) {
   const res = await fetch(`${baseUrl}${path}`, {
@@ -25,8 +25,7 @@ async function request(baseUrl, path, { method = "GET", body } = {}) {
 function apiTaskToTodo(task) {
   return createTodo({
     id: String(task.id),
-    title: task.name, 
-    done: task.is_complete,
+    title: task.title, 
   });
 }
 
@@ -51,15 +50,6 @@ export function createTodoRepositoryRest({ baseUrl }) {
     async remove(id) {
       await request(baseUrl, `/tasks/${id}`, { method: "DELETE" });
       return true;
-    },
-
-    async toggle(id) {
-      const response = await request(baseUrl, `/tasks/toggle/${id}`, {
-        method: "PUT",
-      });
-
-      if (!response?.data) throw new Error("API did not return updated task");
-      return apiTaskToTodo(response.data);
-    },
+    }
   };
 }

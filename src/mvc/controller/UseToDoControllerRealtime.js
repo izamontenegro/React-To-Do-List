@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { createTodoRepositoryRest } from "../model/ToDoRepositoryREST";
-import { useToDoRealtime } from "../../realtime/useToDoRealtime";
+import { createTodoRepositoryRest } from "../../data/ToDoRepositoryREST";
+import { useToDoRealtime } from "../../data/UseToDoRealtime"
 
 export function useToDoController() {
   const repo = useMemo(
@@ -16,8 +16,6 @@ export function useToDoController() {
 
   useToDoRealtime({
     onCreated: (task) => setTodos((prev) => [...prev, task]),
-    onUpdated: (task) => setTodos((prev) => prev.map((t) => (t.id === task.id ? task : t))),
-    onToggled: (id) => setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, is_completed: !t.is_completed } : t))),
     onDeleted: (id) => setTodos((prev) => prev.filter((t) => t.id !== id)),
   });
 
@@ -40,11 +38,12 @@ export function useToDoController() {
 
   async function addNewItem() {
     if (!newTitle.trim()) return;
-
     try {
       await repo.add(newTitle);
+      console.log(newTitle);
       setNewTitle("");
     } catch (error) {
+      console.log(error);
       alert("Erro ao adicionar tarefa.");
     }
   }
@@ -52,18 +51,8 @@ export function useToDoController() {
   async function deleteItem(id) {
     try {
       await repo.remove(id);
-      setTodos((prev) => prev.filter((t) => t.id !== id));
     } catch (error) {
       alert("Erro ao remover tarefa.");
-    }
-  }
-
-  async function toggleCheckbox(id) {
-    try {
-      await repo.toggle(id);
-      
-    } catch (e) {
-      alert("Erro ao atualizar.");
     }
   }
 
@@ -73,6 +62,5 @@ export function useToDoController() {
     setNewTitle,
     addNewItem,
     deleteItem,
-    toggleCheckbox,
   };
 }

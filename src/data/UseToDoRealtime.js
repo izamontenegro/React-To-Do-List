@@ -1,12 +1,12 @@
-import { useEffect, useRef } from "react"; // Adicionado useRef
+import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 
-export function useToDoRealtime({ onCreated, onUpdated, onDeleted, onToggled }) {
-  const handlers = useRef({ onCreated, onUpdated, onDeleted, onToggled });
+export function useToDoRealtime({ onCreated, onDeleted }) {
+  const handlers = useRef({ onCreated, onDeleted });
 
   useEffect(() => {
-    handlers.current = { onCreated, onUpdated, onDeleted, onToggled };
-  }, [onCreated, onUpdated, onDeleted, onToggled]);
+    handlers.current = { onCreated, onDeleted, };
+  }, [onCreated, onDeleted]);
 
   useEffect(() => {
     const socket = io("https://twodo-tasklist.onrender.com", {
@@ -19,21 +19,15 @@ export function useToDoRealtime({ onCreated, onUpdated, onDeleted, onToggled }) 
     });
 
     socket.on("message", (data) => {
-      console.log("CHEGOU NO SOCKET:", data);
-
         const { event, task, task_id } = data;
 
         switch (event) {
             case "TASK_CREATED":
                 onCreated?.(task); 
                 break;
-            case "TASK_UPDATED":
-            case "TASK_TOGGLED":
-              onToggled?.(task);
-              break;
             case "TASK_DELETED":
-                onDeleted?.(task_id);
-            break;
+              onDeleted?.(task_id);
+              break;
         }
     });
 

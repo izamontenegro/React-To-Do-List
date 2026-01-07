@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createTodoRepositoryRest } from "../model/ToDoRepositoryREST";
 
-export function useTodoPresenter() {
+export function useTodoViewModel() {
   const repo = useMemo(
     () => createTodoRepositoryRest({ baseUrl: "https://twodo-tasklist.onrender.com" }),
     []
@@ -20,7 +20,7 @@ export function useTodoPresenter() {
       })
       .catch((err) => {
         console.error(err);
-        console.error("oiiiii");
+        console.error("[ERROR] Falha ao carregar tarefas da API");
         alert("Falha ao carregar tarefas da API.");
       });
 
@@ -57,7 +57,10 @@ export function useTodoPresenter() {
   }
 
   return {
-    state: { todos, newTitle },
-    actions: { setNewTitle, addNewItem, deleteItem },
+    todos,
+    newTitle,
+    setNewTitle,
+    addNewItem,
+    deleteItem,
   };
 }

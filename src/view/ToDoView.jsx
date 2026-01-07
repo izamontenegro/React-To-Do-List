@@ -1,17 +1,24 @@
 import React from "react";
 import "./ToDoView.css";
 
-export function TodoView({ todos, newTitle, onNewTitleChange, onAdd, onDelete }) {
+export function TodoView({ vm }) {
+  const {
+    todos,
+    newTitle,
+    setNewTitle,
+    addNewItem,
+    deleteItem,
+  } = vm;
+
   return (
     <div className="container">
       <input
         placeholder="Tarefa"
         value={newTitle}
-        onChange={(e) => onNewTitleChange(e.target.value)}
-        type="text"
+        onChange={(e) => setNewTitle(e.target.value)}
       />
 
-      <button className="new-item-button" onClick={onAdd}>
+      <button className="new-item-button" onClick={addNewItem}>
         Adicionar nova tarefa
       </button>
 
@@ -19,7 +26,7 @@ export function TodoView({ todos, newTitle, onNewTitleChange, onAdd, onDelete })
         {todos.map((todo) => (
           <li className="todo-item" key={todo.id}>
             <span>{todo.title}</span>
-            <button onClick={() => onDelete(todo.id)}>Deletar</button>
+            <button onClick={() => deleteItem(todo.id)}>Deletar</button>
           </li>
         ))}
       </ul>

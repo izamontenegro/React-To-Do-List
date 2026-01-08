@@ -25,7 +25,7 @@ async function request(baseUrl, path, { method = "GET", body } = {}) {
 function apiTaskToTodo(task) {
   return createTodo({
     id: String(task.id),
-    title: task.title, 
+    name: task.name, 
   });
 }
 
@@ -36,10 +36,10 @@ export function createTodoRepositoryRest({ baseUrl }) {
       return response.data.map(apiTaskToTodo);
     },
 
-    async add(title) {
+    async add(name) {
       const response = await request(baseUrl, "/tasks/", {
         method: "POST",
-        body: { name: title },
+        body: { name: name },
       });
 
       if (!response?.data) throw new Error("API did not return created task");

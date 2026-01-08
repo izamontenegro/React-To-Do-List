@@ -1,3 +1,3 @@
-export function createTodo({ id, title }) {
-  return { id, title };
+export function createTodo({ id, name }) {
+  return { id, name };
 }

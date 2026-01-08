@@ -1,11 +1,12 @@
 import React from "react";
 import { useToDoController } from "../mvc/controller/UseToDoController";
 import { useTodoPresenter } from "../mvp/presenter/UseToDoPresenter";
+import { useToDoViewModel } from "../mvvm/viewmodel/UseToDoViewModel";
 import { TodoView } from "../view/ToDoView";
 
 function App() {
   // Esse trecho usa o MVP
-  const { state, actions } = useTodoPresenter();
+ /* const { state, actions } = useTodoPresenter();
 
   return (
     <TodoView
@@ -15,7 +16,7 @@ function App() {
       onAdd={actions.addNewItem}
       onDelete={actions.deleteItem}
     />
-  );
+  );*/
   /*
   // Esse trecho usa o MVC:
   const controller = useToDoController();
@@ -29,6 +30,11 @@ function App() {
       onDelete={controller.deleteItem}
     />
   );*/
+
+  //Esse trecho usa o MVVM:
+  const vm = useToDoViewModel();
+  return <TodoView vm = {vm} />;
+  
 }
 
 export default App;

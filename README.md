@@ -9,6 +9,10 @@ O aplicativo implementa:
 
 ---
 
+## Backend
+
+[Link do repositório da API](https://github.com/Davicbm/2do-backend)
+
 ## Como rodar
 
 ```bash
